@@ -35,5 +35,10 @@ class DatabaseSeeder extends Seeder
                 'role'       => 'Admin',
             ]
         );
+
+        // 3. Call the BarangSeeder to import the CSV
+        $this->call([
+            BarangSeeder::class,
+        ]);
     }
 }

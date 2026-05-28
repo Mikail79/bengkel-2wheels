@@ -142,7 +142,13 @@
         <div class="w-20 h-20 rounded-full bg-emerald-success/20 flex items-center justify-center mx-auto mb-4"><span class="material-symbols-outlined text-4xl text-emerald-success">check_circle</span></div>
         <h3 class="font-headline-md text-headline-md text-on-surface mb-2">Transaction Saved!</h3>
         <p id="success-nota-id" class="font-receipt-mono text-receipt-mono text-text-secondary mb-6"></p>
-        <button onclick="resetForm()" class="w-full h-12 bg-racing-red text-text-primary rounded font-label-sm text-label-sm uppercase tracking-wider hover:bg-primary-container transition-colors">New Transaction</button>
+        
+        <div class="flex flex-col gap-3">
+            <button id="btn-cetak-struk" onclick="" class="w-full h-12 bg-surface-container-high border border-outline-variant text-text-primary rounded font-label-sm text-label-sm uppercase tracking-wider hover:bg-surface-variant transition-colors flex items-center justify-center gap-2 active:scale-95">
+                <span class="material-symbols-outlined">receipt_long</span> Cetak Struk
+            </button>
+            <button onclick="resetForm()" class="w-full h-12 bg-racing-red text-text-primary rounded font-label-sm text-label-sm uppercase tracking-wider hover:bg-primary-container transition-colors shadow-[0_0_15px_rgba(229,57,53,0.3)] active:scale-95">New Transaction</button>
+        </div>
     </div>
 </div>
 @endsection
@@ -383,6 +389,7 @@ function completeTransaction() {
     .then(data => {
         if (data.success) {
             document.getElementById('success-nota-id').textContent = `Nota: ${data.id_nota} — Total: ${formatNumber(data.total)} IDR`;
+            document.getElementById('btn-cetak-struk').onclick = () => window.open(`/cetak-struk/${data.id_nota}`, '_blank');
             document.getElementById('success-modal').classList.remove('hidden');
             document.getElementById('success-modal').classList.add('flex');
         } else {
