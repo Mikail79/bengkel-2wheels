@@ -156,10 +156,8 @@ let debounceTimer;
 const custInput = document.getElementById('customer-search');
 const custDropdown = document.getElementById('customer-dropdown');
 
-custInput.addEventListener('input', function() {
+function performCustomerSearch(q) {
     clearTimeout(debounceTimer);
-    const q = this.value.trim();
-    if (q.length < 2) { custDropdown.classList.add('hidden'); return; }
     debounceTimer = setTimeout(() => {
         fetch(`/api/customers/search?q=${encodeURIComponent(q)}`)
             .then(r => r.json())
@@ -189,6 +187,14 @@ custInput.addEventListener('input', function() {
                 });
             });
     }, 300);
+}
+
+custInput.addEventListener('input', function() {
+    performCustomerSearch(this.value.trim());
+});
+
+custInput.addEventListener('focus', function() {
+    performCustomerSearch(this.value.trim());
 });
 
 function selectCustomer(c) {
@@ -220,10 +226,8 @@ const itemDropdown = document.getElementById('item-dropdown');
 
 let _searchResults = []; // temp store for search results
 
-itemInput.addEventListener('input', function() {
+function performItemSearch(q) {
     clearTimeout(debounceTimer);
-    const q = this.value.trim();
-    if (q.length < 1) { itemDropdown.classList.add('hidden'); return; }
     debounceTimer = setTimeout(() => {
         fetch(`/api/barangs/search?q=${encodeURIComponent(q)}`)
             .then(r => r.json())
@@ -263,6 +267,14 @@ itemInput.addEventListener('input', function() {
                 });
             });
     }, 200);
+}
+
+itemInput.addEventListener('input', function() {
+    performItemSearch(this.value.trim());
+});
+
+itemInput.addEventListener('focus', function() {
+    performItemSearch(this.value.trim());
 });
 
 function addLineItem(barang) {

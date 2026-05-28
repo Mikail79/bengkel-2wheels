@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Petugas;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,11 +16,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // 1. Create the matching petugas (staff domain record)
+        $petugas = Petugas::firstOrCreate(
+            ['id_petugas' => 'ADM-001'],
+            [
+                'nama'    => 'Super Admin',
+                'jabatan' => 'Admin',
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // 2. Create the Super Admin auth account linked to the petugas
+        User::firstOrCreate(
+            ['email' => 'admin@2wheels.local'],
+            [
+                'name'       => 'Super Admin',
+                'password'   => bcrypt('admin123'),
+                'id_petugas' => $petugas->id_petugas,
+                'role'       => 'Admin',
+            ]
+        );
     }
 }

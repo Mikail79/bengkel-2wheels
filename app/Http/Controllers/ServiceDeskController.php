@@ -116,4 +116,19 @@ class ServiceDeskController extends Controller
             'total'    => $totalJumlah,
         ]);
     }
+
+    /**
+     * Display a printable thermal receipt for a specific Nota.
+     */
+    public function cetakStruk(string $id)
+    {
+        $nota = Nota::with([
+            'details.barang',
+            'motor.customer',
+            'admin',
+            'mekanik',
+        ])->findOrFail($id);
+
+        return view('cetak-struk', compact('nota'));
+    }
 }

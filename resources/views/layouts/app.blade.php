@@ -409,12 +409,26 @@
 
             </nav>
 
-            <!-- Footer Area -->
+            <!-- Footer Area: Logged-in User + Logout -->
             <div class="mt-auto px-3 pt-4 border-t border-outline-variant/30">
-                <a id="nav-logout" class="nav-item flex items-center gap-3 px-3 h-input-height rounded text-on-surface-variant hover:text-racing-red hover:bg-surface-container-high group active:translate-x-1 transition-transform" href="#">
-                    <span class="material-symbols-outlined group-hover:text-racing-red transition-colors">logout</span>
-                    <span class="font-label-sm text-label-sm uppercase tracking-wider">Logout</span>
-                </a>
+                @auth
+                <div class="flex items-center gap-3 px-3 py-2 mb-1">
+                    <div class="w-8 h-8 rounded-full bg-racing-red/20 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-sm text-racing-red" style='font-variation-settings: "FILL" 1;'>person</span>
+                    </div>
+                    <div class="truncate">
+                        <div class="font-label-sm text-[11px] text-text-primary uppercase tracking-wider truncate">{{ Auth::user()->name }}</div>
+                        <div class="font-label-sm text-[9px] text-text-secondary uppercase tracking-widest">{{ Auth::user()->role }}</div>
+                    </div>
+                </div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button id="nav-logout" type="submit" class="nav-item w-full flex items-center gap-3 px-3 h-input-height rounded text-on-surface-variant hover:text-racing-red hover:bg-surface-container-high group active:translate-x-1 transition-transform">
+                        <span class="material-symbols-outlined group-hover:text-racing-red transition-colors">logout</span>
+                        <span class="font-label-sm text-label-sm uppercase tracking-wider">Logout</span>
+                    </button>
+                </form>
+                @endauth
             </div>
         </aside>
 
@@ -561,8 +575,9 @@
             // Set up exit/logout animation
             const logoutBtn = document.getElementById('nav-logout');
             const logoutOverlay = document.getElementById('logout-overlay');
+            const logoutForm = logoutBtn ? logoutBtn.closest('form') : null;
 
-            if (logoutBtn && logoutOverlay) {
+            if (logoutBtn && logoutOverlay && logoutForm) {
                 logoutBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     
@@ -623,22 +638,8 @@
                         duration: 1500,
                         easing: 'easeInOutQuad',
                         complete: () => {
-                            const subtitle = document.getElementById('logout-subtitle');
-                            if (subtitle) {
-                                subtitle.innerHTML = 'Session Closed. <button onclick="location.reload()" class="mt-4 px-6 py-2.5 bg-racing-red text-text-primary rounded font-label-sm text-label-sm uppercase tracking-wider hover:bg-primary-container transition-colors shadow-[0_0_15px_rgba(229,57,53,0.4)] active:scale-95">Sign In Again</button>';
-                                anime({
-                                    targets: subtitle,
-                                    opacity: [0, 1],
-                                    translateY: [10, 0],
-                                    duration: 500
-                                });
-                            }
-                            
-                            anime({
-                                targets: '#logout-overlay .logout-bar-container',
-                                opacity: 0,
-                                duration: 300
-                            });
+                            // Actually submit the logout form to destroy the session
+                            logoutForm.submit();
                         }
                     }, '-=100');
                 });
